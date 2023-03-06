@@ -1,5 +1,7 @@
 import '../form-input/form-input.styles.scss';
 
+// ...inputOptions - spread all other attributes when use this component
+// label className - when there is a input value, use the 'shrink' class
 const FormInput = ({label, ...inputOptions }) => {
     return (
         <div className='group'>

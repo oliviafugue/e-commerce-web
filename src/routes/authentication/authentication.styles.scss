@@ -1,0 +1,6 @@
+.authentication-container {
+ display:flex;
+ width: 900px;
+ justify-content: space-between;
+ margin: 30px auto; //只有上下有margin，左右auto - 不论scree多大，居中显示
+}

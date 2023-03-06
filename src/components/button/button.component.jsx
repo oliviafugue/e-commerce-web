@@ -10,7 +10,7 @@ const BUTTON_TYPE_CLASS = {
     inverted: 'inverted'
 }
 
-// ...otherProps - spread all other attrbutes given when use this Button component
+// ...otherProps - spread all other given attrbutes when use this Button component
 const Button = ({children, buttonType, ...otherProps}) => {
     return <button className={`button-container ${BUTTON_TYPE_CLASS[buttonType]}`} {...otherProps}>{children}</button>
 }
