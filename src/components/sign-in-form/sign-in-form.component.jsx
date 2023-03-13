@@ -1,7 +1,5 @@
-import { useState, useContext } from 'react';
+import { useState } from 'react';
 import { createUserDocumentFromAuth, signInWithGooglePopup, signInAuthUserWithEmailAndPassword } from '../../utilities/firebase/firebase';
-
-import { UserContext } from '../../contexts/user.context';
 
 import FormInput from '../form-input/form-input.components';
 import Button from '../button/button.component'
@@ -18,16 +16,8 @@ const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { email, password } = formFields;
 
-    //userContext的一个value - setter function
-    const { setCurrentUser } = useContext(UserContext);
-
     const resetFormFields = () => {
         setFormFields(defaultFormFields);
-    }
-
-    const signInWithGoogle = async () => {
-        const { user } = await signInWithGooglePopup();
-        await createUserDocumentFromAuth(user)    
     }
 
     const handleSubmit = async (event) => {
@@ -35,9 +25,6 @@ const SignInForm = () => {
 
         try {
             const { user } = await signInAuthUserWithEmailAndPassword(email, password); //大括号里的user：destructure了的response.user
-            console.log(user)
-            setCurrentUser(user) //一旦有user的data，用上面从useContext获取的setter function update current user in context
-
             resetFormFields();  
         } catch (error) {
             switch(error.code) {
@@ -70,9 +57,8 @@ const SignInForm = () => {
                 <div className='buttons-container'>
                     <Button type='submit'>SIGN IN</Button>
                     {/*form里的button默认是submit type，下面的google signin需要手动给一个button type*/}
-                    <Button type='button' buttonType='google' onClick={signInWithGoogle}>GOOGLE SIGN IN</Button>
-                </div>
-                
+                    <Button type='button' buttonType='google' onClick={signInWithGooglePopup}>GOOGLE SIGN IN</Button>
+                </div>      
             </form>
         </div>
     );
