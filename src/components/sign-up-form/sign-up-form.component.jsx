@@ -1,6 +1,7 @@
-import { useState } from 'react';
+import { useState, useContext } from 'react';
 import { createAuthUserWithEmailAndPassword, createUserDocumentFromAuth } from '../../utilities/firebase/firebase';
 import FormInput from '../form-input/form-input.components';
+import { UserContext } from '../../contexts/user.context';
 import '../sign-up-form/sign-up-form.styles.scss'
 import Button from '../button/button.component'
 
@@ -15,6 +16,7 @@ const defaultFormFields = {
 const SignUpForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { displayName, email, password, confirmPassword } = formFields;
+    const { setCurrentUser } = useContext(UserContext);
 
     const resetFormFields = () => {
         setFormFields(defaultFormFields);
@@ -30,16 +32,24 @@ const SignUpForm = () => {
 
         try {
             const {user} = await createAuthUserWithEmailAndPassword(email, password);
+
+            setCurrentUser(user);
+
             await createUserDocumentFromAuth(user, {displayName}) //function defined in firebase.jsx, import and use here to create user doc based on input filed data; two param: userauth, additionalInfo
             resetFormFields();
             
         } catch (error) {
-            if (error.code === 'auth/email-already-in-use') {
-                alert('Cannot create user, email already in use.')
-            }
-            console.log('cannot create user', error.message);
+            switch (error.code) {
+                case 'auth/email-already-in-use':
+                    alert('Cannot create user, email already in use.');
+                    break;
+                case 'auth/weak-password':
+                    alert('Password should be at least 6 characters');
+                    break;
+                default:
+                    console.log(error)
+            }}
         }
-    }
 
     const handleChange = (event) => {
         const { name, value } = event.target; //name = event.target.name; value = event.target.value

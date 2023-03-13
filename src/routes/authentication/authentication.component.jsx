@@ -15,7 +15,7 @@ const Authentication = () => {
             <SignInForm />
             <SignUpForm />
         </div>
-    )
-}
+    );
+};
 
 export default Authentication;

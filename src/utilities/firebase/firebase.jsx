@@ -1,7 +1,7 @@
 //// a place to store all firebase related functions ////
 
 import { initializeApp } from "firebase/app";
-import { GoogleAuthProvider, getAuth, signInWithRedirect, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import { GoogleAuthProvider, getAuth, signInWithRedirect, signInWithPopup, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth";
 import { getFirestore, doc, getDoc, setDoc } from 'firebase/firestore';
 
 
@@ -22,7 +22,7 @@ const app = initializeApp(firebaseConfig);
 const provider = new GoogleAuthProvider(); //new instance
 provider.setCustomParameters({
     prompt: 'select_account'
-})
+});
 
 // setup auth - each app can only has one authentication method
 export const auth = getAuth(); 
@@ -57,14 +57,16 @@ export const createUserDocumentFromAuth = async (userAuth, additionalInfo) => {
 
    //if user exists
    return userDocRef;
-}
+};
 
 export const createAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
   return await createUserWithEmailAndPassword(auth, email, password);
- }
+};
 
- export const signInAuthUserWithEmailAndPassword = async (email, password) => {
+export const signInAuthUserWithEmailAndPassword = async (email, password) => {
   if (!email || !password) return;
   return await signInWithEmailAndPassword(auth, email, password);
- }
+};
+
+export const signOutUser = async () => await signOut(auth);

@@ -1,8 +1,12 @@
-import { useLayoutEffect, useState } from 'react';
+import { useState, useContext } from 'react';
 import { createUserDocumentFromAuth, signInWithGooglePopup, signInAuthUserWithEmailAndPassword } from '../../utilities/firebase/firebase';
+
+import { UserContext } from '../../contexts/user.context';
+
 import FormInput from '../form-input/form-input.components';
-import '../sign-in-form/sign-in-form.styles.scss'
 import Button from '../button/button.component'
+
+import '../sign-in-form/sign-in-form.styles.scss'
 
 
 const defaultFormFields = {
@@ -14,21 +18,26 @@ const SignInForm = () => {
     const [formFields, setFormFields] = useState(defaultFormFields);
     const { email, password } = formFields;
 
+    //userContext的一个value - setter function
+    const { setCurrentUser } = useContext(UserContext);
+
     const resetFormFields = () => {
         setFormFields(defaultFormFields);
     }
 
     const signInWithGoogle = async () => {
-        const response = await signInWithGooglePopup();
-        await createUserDocumentFromAuth(response.user)    
+        const { user } = await signInWithGooglePopup();
+        await createUserDocumentFromAuth(user)    
     }
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         try {
-            const response = signInAuthUserWithEmailAndPassword(email, password);
-            console.log(response)
+            const { user } = await signInAuthUserWithEmailAndPassword(email, password); //大括号里的user：destructure了的response.user
+            console.log(user)
+            setCurrentUser(user) //一旦有user的data，用上面从useContext获取的setter function update current user in context
+
             resetFormFields();  
         } catch (error) {
             switch(error.code) {
